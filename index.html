@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WebKit3 - PS3 Host</title>
+    <style>
+        /* Cyber-Dark Style optimized for PS3 Browser */
+        body {
+            background-color: #0d0e12;
+            color: #e0e0e0;
+            font-family: Arial, Helvetica, sans-serif;
+            text-align: center;
+            padding-top: 40px;
+            margin: 0;
+        }
+        .header {
+            margin-bottom: 30px;
+        }
+        h1 {
+            color: #00ffcc;
+            font-size: 32px;
+            text-shadow: 0 0 10px rgba(0, 255, 204, 0.3);
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            color: #888da8;
+            font-size: 16px;
+            margin-top: 0;
+        }
+        .firmware-badge {
+            background-color: #1e2230;
+            color: #00ffcc;
+            border: 1px solid #00ffcc;
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 10px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .btn-container {
+            margin-top: 25px;
+        }
+        .btn {
+            background-color: #15171e;
+            color: #ffffff;
+            border: 2px solid #00ffcc;
+            padding: 14px 28px;
+            font-size: 18px;
+            margin: 10px auto;
+            cursor: pointer;
+            border-radius: 6px;
+            width: 280px;
+            display: block;
+            font-weight: bold;
+        }
+        .btn:hover {
+            background-color: #00ffcc;
+            color: #0d0e12;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.5);
+        }
+        #status-box {
+            background-color: #15171e;
+            border: 1px solid #262936;
+            border-radius: 6px;
+            width: 80%;
+            max-width: 500px;
+            margin: 40px auto 0 auto;
+            padding: 15px;
+        }
+        #status-title {
+            font-size: 14px;
+            color: #888da8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+        #status {
+            font-size: 18px;
+            color: #ffcc00;
+            font-weight: bold;
+        }
+    </style>
+
+    <script>
+        // Function to detect PS3, PS4 or PC firmware via User-Agent
+        function detectFirmware() {
+            var ua = navigator.userAgent;
+            var fwBadge = document.getElementById("fw-version");
+
+            if (ua.indexOf("PlayStation 3") !== -1) {
+                // Extracts the version number after "PlayStation 3/"
+                var match = ua.match(/PlayStation 3\/([0-9.]+)/);
+                if (match && match[1]) {
+                    fwBadge.innerHTML = "PS3 Firmware: " + match[1];
+                } else {
+                    fwBadge.innerHTML = "PS3 Detected (Unknown FW)";
+                }
+            } else if (ua.indexOf("PlayStation 4") !== -1) {
+                var matchPS4 = ua.match(/PlayStation 4\/([0-9.]+)/);
+                if (matchPS4 && matchPS4[1]) {
+                    fwBadge.innerHTML = "PS4 Firmware: " + matchPS4[1];
+                } else {
+                    fwBadge.innerHTML = "PS4 Detected";
+                }
+            } else {
+                // If opened on PC/Linux Firefox
+                fwBadge.innerHTML = "Testing Environment (PC/Linux)";
+                fwBadge.style.color = "#ff8000";
+                fwBadge.style.borderColor = "#ff8000";
+            }
+        }
+
+        // Run detection as soon as the page loads
+        window.onload = detectFirmware;
+
+        // Helper function to inject and run external JS files dynamically
+        function injectScript(fileName) {
+            var script = document.createElement("script");
+            script.src = fileName;
+            document.head.appendChild(script);
+        }
+
+        // Payload triggers for WebKit3
+        function loadBinLoader() {
+            document.getElementById("status").innerHTML = "Initializing Bin Loader... Please wait.";
+            document.getElementById("status").style.color = "#ffcc00";
+            injectScript("bin_loader.js");
+        }
+
+        function launchHEN() {
+            document.getElementById("status").innerHTML = "Launching PS3HEN... Please wait.";
+            document.getElementById("status").style.color = "#ffcc00";
+            injectScript("ps3hen.js");
+        }
+
+        function runApp2USB() {
+            document.getElementById("status").innerHTML = "Triggering App2USB... Check your USB drive.";
+            document.getElementById("status").style.color = "#ffcc00";
+            injectScript("app2usb.js");
+        }
+    </script>
+</head>
+<body>
+
+    <div class="header">
+        <h1>🛠️ WebKit3</h1>
+        <p class="subtitle">Multi-Payload Local Host for PlayStation 3</p>
+        <!-- Firmware Display Badge -->
+        <div id="fw-version" class="firmware-badge">Detecting system...</div>
+    </div>
+
+    <div class="btn-container">
+        <!-- WebKit3 Suite Buttons -->
+        <button class="btn" onclick="loadBinLoader()">Load Bin Loader</button>
+        <button class="btn" onclick="launchHEN()">Launch PS3HEN</button>
+        <button class="btn" onclick="runApp2USB()">Run App2USB</button>
+    </div>
+
+    <!-- Exploit Status Monitor -->
+    <div id="status-box">
+        <div id="status-title">System Status</div>
+        <div id="status">Ready to inject payloads.</div>
+    </div>
+
+</body>
+</html>
