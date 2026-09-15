@@ -120,7 +120,11 @@
             document.head.appendChild(script);
         }
 
-        // Action triggers for each button
+        // Action triggers for each button in WebKit3
+        function runJailbreak() {
+            injectScript("jailbreak.js");
+        }
+
         function loadBinLoader() {
             injectScript("bin_loader.js");
         }
@@ -148,6 +152,7 @@
 
     <div class="btn-container">
         <!-- Suite Control Buttons -->
+        <button class="btn" onclick="runJailbreak()">Initialize Jailbreak</button>
         <button class="btn" onclick="loadBinLoader()">Load Bin Loader</button>
         <button class="btn" onclick="launchHEN()">Launch PS3HEN</button>
         <button class="btn" onclick="runApp2USB()">Run App2USB</button>
